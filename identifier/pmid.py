@@ -97,28 +97,30 @@ class PMIDManager(IdentifierManager):
 
         if self._use_api_service:
             pmid = self.normalise(pmid_full)
-            tentative = 3
-            while tentative:
-                tentative -= 1
-                try:
-                    r = get(
-                        self._api + quote(pmid) + "/?format=pmid",
-                        headers=self._headers,
-                        timeout=30,
-                    )
-                    if r.status_code == 200:
-                        r.encoding = "utf-8"
-                        soup = BeautifulSoup(r.content, features="lxml")
-                        for i in soup.find_all("meta", {"name": "uid"}):
-                            id = i["content"]
-                            if id == pmid:
-                                return True
+            if pmid is not None:
+                tentative = 3
+                while tentative:
+                    tentative -= 1
+                    try:
+                        r = get(
+                            self._api + quote(pmid) + "/?format=pmid",
+                            headers=self._headers,
+                            timeout=30,
+                        )
+                        if r.status_code == 200:
+                            r.encoding = "utf-8"
+                            soup = BeautifulSoup(r.content, features="lxml")
+                            for i in soup.find_all("meta", {"name": "uid"}):
+                                id = i["content"]
+                                if id == pmid:
+                                    return True
 
-                except ReadTimeout:
-                    # Do nothing, just try again
-                    pass
-                except ConnectionError:
-                    # Sleep 5 seconds, then try again
-                    sleep(5)
-
+                    except ReadTimeout:
+                        # Do nothing, just try again
+                        pass
+                    except ConnectionError:
+                        # Sleep 5 seconds, then try again
+                        sleep(5)
+            else:
+                return False
         return False

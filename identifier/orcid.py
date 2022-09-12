@@ -104,20 +104,22 @@ class ORCIDManager(IdentifierManager):
         if self._use_api_service:
             self._headers["Accept"] = "application/json"
             orcid = self.normalise(orcid)
-            tentative = 3
-            while tentative:
-                tentative -= 1
-                try:
-                    r = get(self._api + quote(orcid), headers=self._headers, timeout=30)
-                    if r.status_code == 200:
-                        r.encoding = "utf-8"
-                        json_res = loads(r.text)
-                        return json_res.get("orcid-identifier").get("path") == orcid
-                except ReadTimeout:
-                    # Do nothing, just try again
-                    pass
-                except ConnectionError:
-                    # Sleep 5 seconds, then try again
-                    sleep(5)
-
+            if orcid is not None:
+                tentative = 3
+                while tentative:
+                    tentative -= 1
+                    try:
+                        r = get(self._api + quote(orcid), headers=self._headers, timeout=30)
+                        if r.status_code == 200:
+                            r.encoding = "utf-8"
+                            json_res = loads(r.text)
+                            return json_res.get("orcid-identifier").get("path") == orcid
+                    except ReadTimeout:
+                        # Do nothing, just try again
+                        pass
+                    except ConnectionError:
+                        # Sleep 5 seconds, then try again
+                        sleep(5)
+            else:
+                return False
         return False
