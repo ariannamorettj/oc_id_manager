@@ -1,5 +1,6 @@
 #!python
-# Copyright (c) 2022 The OpenCitations Index Authors.
+# Copyright 2019, Silvio Peroni <essepuntato@gmail.com>
+# Copyright 2022, Giuseppe Grieco <giuseppe.grieco3@unibo.it>, Arianna Moretti <arianna.moretti4@unibo.it>, Elia Rizzetto <elia.rizzetto@studio.unibo.it>, Arcangelo Massari <arcangelo.massari@unibo.it>
 #
 # Permission to use, copy, modify, and/or distribute this software for any purpose
 # with or without fee is hereby granted, provided that the above copyright notice
@@ -13,17 +14,18 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-import unittest
+
 import json
+import unittest
 
 from os import makedirs
 from os.path import join, exists
 
-from identifier.doi import DOIManager
-from identifier.pmid import PMIDManager
-from identifier.issn import ISSNManager
-from identifier.orcid import ORCIDManager
-from identifier.isbn import ISBNManager
+from oc_id_manager.doi import DOIManager
+from oc_id_manager.isbn import ISBNManager
+from oc_id_manager.issn import ISSNManager
+from oc_id_manager.orcid import ORCIDManager
+from oc_id_manager.pmid import PMIDManager
 
 
 class IdentifierManagerTest(unittest.TestCase):
@@ -172,7 +174,6 @@ class IdentifierManagerTest(unittest.TestCase):
         self.assertFalse(om.is_valid(self.invalid_orcid_3))
         self.assertFalse(om.is_valid(self.invalid_orcid_4))
 
-
     def test_isbn_normalise(self):
         im = ISBNManager()
         self.assertEqual(
@@ -184,7 +185,6 @@ class IdentifierManagerTest(unittest.TestCase):
         self.assertEqual(
             im.normalise(self.valid_isbn_2), im.normalise(self.valid_isbn_2.replace("-", "  "))
         )
-
 
     def test_isbn_is_valid(self):
         im = ISBNManager()

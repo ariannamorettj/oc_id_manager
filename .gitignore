@@ -2,3 +2,6 @@ venv
 .idea
 identifier/prove.py
 test/test_identifier.pyc
+__pycache__/
+.vscode/
+dist/
